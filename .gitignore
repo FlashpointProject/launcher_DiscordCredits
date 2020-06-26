@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Working files
+credits.json
+credits_new.json
+
+# NEVER STORE TOKEN
+token.txt
