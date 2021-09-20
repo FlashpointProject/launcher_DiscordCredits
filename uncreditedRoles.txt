@@ -1,13 +1,13 @@
 @everyone
-Archiver
 Trial Curator
 Timeout
 Notification Squad
-Archiver
-Former Staff
 MOTAS Finder
 Nitro Booster
-Moderator [pt]
-Moderator [it]
-Moderator [fr]
-Moderator [de]
+Bunnyposter
+Bot
+Archiver
+FPFSS Notification Service
+PF Scrape
+Guardian
+BlueBot

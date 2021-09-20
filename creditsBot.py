@@ -60,7 +60,7 @@ async def run(ctx):
             profile.topRole = rawProfile['topRole']
           profiles.append(profile)
         for rawRole in rawOldCredits['roles']:
-          role = Role(rawRole['name'], rawRole['color'], 'noCategory' in rawRole)
+          role = Role(rawRole['name'], rawRole['color'], rawRole['noCategory'])
           roles.append(role)
 
     # Find all roles
