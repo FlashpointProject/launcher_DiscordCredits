@@ -10,12 +10,16 @@ bot = commands.Bot(command_prefix='>', intents=intents)
 token = ''
 valid_users = []
 uncredited = []
+top_roles = []
 with open('token.txt', 'r') as f:
   token = f.read().replace('\n', '')
 with open('users.txt', 'r') as f:
   valid_users = map(int, f.read().splitlines())
 with open('uncreditedRoles.txt', 'r') as f:
   uncredited = f.read().splitlines()
+with open('topRoles.txt', 'r') as f:
+  top_roles = f.read().splitlines()
+role_order = {}
 
 class Role:
   def __init__(self, name, color, noCategory):
@@ -27,10 +31,14 @@ class Profile:
   def __init__(self, title):
     self.id = 0
     self.title = title
+    self.keepTitle = False
     self.icon = None
     self.note = ''
     self.roles = []
     self.topRole = ''
+
+def sort_roles(e):
+  return role_order[e]
 
 @bot.command()
 async def run(ctx):
@@ -54,23 +62,26 @@ async def run(ctx):
           profile.roles = rawProfile['roles']
           if 'id' in rawProfile:
             profile.id = rawProfile['id']
+          if 'keepTitle' in rawProfile:
+            profile.keepTitle = rawProfile['keepTitle']
           if 'note' in rawProfile:
             profile.note = rawProfile['note']
           if 'topRole' in rawProfile:
             profile.topRole = rawProfile['topRole']
           profiles.append(profile)
         for rawRole in rawOldCredits['roles']:
-          role = Role(rawRole['name'], rawRole['color'], 'noCategory' in rawRole)
+          role = Role(rawRole['name'], rawRole['color'], rawRole['noCategory'])
           roles.append(role)
 
     # Find all roles
-    for r in guild.roles:
+    for i, r in enumerate(guild.roles):
+      role_order[r.name] = i
       if r.name not in uncredited:
         role = None
         roleIndex = None
         # Load existing role if possible
         try:
-          roleIndex = next(i for i, x in enumerate(roles) if x.name == r.name)
+          roleIndex = next(j for j, x in enumerate(roles) if x.name == r.name)
         except Exception:
           pass
         if roleIndex is None:
@@ -102,11 +113,11 @@ async def run(ctx):
           pass
         if profileIndex is None:
           try:
-            profileIndex = next(i for i, x in enumerate(profiles) if x.id == 0 and x.title == member.display_name)
+            profileIndex = next(i for i, x in enumerate(profiles) if x.id == 0 and x.title == member.name)
           except Exception:
             pass
         if profileIndex is None:
-          profile = Profile(member.display_name)
+          profile = Profile(member.name)
           totalNew += 1
           print('New Profile {}'.format(profile.title))
         else:
@@ -114,12 +125,22 @@ async def run(ctx):
           totalUpd += 1
           print('Upd Profile {}'.format(profile.title))
         profile.id = member.id
-        profile.title = member.display_name
+        if not profile.keepTitle:
+          # Update the user's name
+          profile.title = member.name
         asset = member.avatar_url_as(format='png', size=64)
         profile.icon = 'data:image/png;base64,{}'.format(base64.b64encode(await asset.read()).decode('utf-8'))
-        profile.roles = []
         for role in memberRoles[::-1]:
-          profile.roles.append(role.name)
+          if role.name not in profile.roles: 
+            profile.roles.append(role.name)
+        # Sort user's roles according to the server role ordering
+        profile.roles.sort(reverse=True, key=sort_roles)
+        # Set a top role from topRoles.txt
+        if not profile.topRole:
+          for role in top_roles:
+            if role in profile.roles:
+              profile.topRole = role
+              break
         # Push index to list
         if profileIndex is None:
           profiles.append(profile)
