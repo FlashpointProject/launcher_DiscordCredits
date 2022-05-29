@@ -9,14 +9,17 @@ intents.members = True
 bot = commands.Bot(command_prefix='>', intents=intents)
 token = ''
 valid_users = []
-uncredited = []
+uncredited_users = []
+uncredited_roles = []
 top_roles = []
 with open('token.txt', 'r') as f:
   token = f.read().replace('\n', '')
 with open('users.txt', 'r') as f:
   valid_users = map(int, f.read().splitlines())
+with open('uncreditedUsers.txt', 'r') as f:
+  uncredited_users = [int(id) for id in f.read().splitlines()]
 with open('uncreditedRoles.txt', 'r') as f:
-  uncredited = f.read().splitlines()
+  uncredited_roles = f.read().splitlines()
 with open('topRoles.txt', 'r') as f:
   top_roles = f.read().splitlines()
 role_order = {}
@@ -76,7 +79,7 @@ async def run(ctx):
     # Find all roles
     for i, r in enumerate(guild.roles):
       role_order[r.name] = i
-      if r.name not in uncredited:
+      if r.name not in uncredited_roles:
         role = None
         roleIndex = None
         # Load existing role if possible
@@ -100,8 +103,8 @@ async def run(ctx):
     await bot.request_offline_members(guild)
     for member in guild.members:
       # Filter out excluded roles
-      memberRoles = list(filter(lambda r: r.name not in uncredited, member.roles))
-      if len(memberRoles) > 0:
+      memberRoles = list(filter(lambda r: r.name not in uncredited_roles, member.roles))
+      if len(memberRoles) > 0 and member.id not in uncredited_users:
         # If roles remain, must be credited
         profile = None
         profileIndex = None
