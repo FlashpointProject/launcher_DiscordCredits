@@ -16,6 +16,8 @@ Make a file `token.txt` and put your Bot token inside it
 
 Put any roles you don't want to credit inside `uncreditedRoles.txt`. Remember that @everyone is a role.
 
+Put any users that should be excluded from the credits inside `uncreditedUsers.txt`.
+
 Put any roles that you want to be top roles by default inside `topRoles.txt`.
 
 Put any users you want the Bot to run commands for inside `users.txt`
