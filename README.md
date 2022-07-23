@@ -18,6 +18,8 @@ Put any roles you don't want to credit inside `uncreditedRoles.txt`. Remember th
 
 Put any users that should be excluded from the credits inside `uncreditedUsers.txt`.
 
+Put any users that should always be included in the credits (even if they don't have a credited role) inside `creditedUsers.txt`.
+
 Put any roles that you want to be top roles by default inside `topRoles.txt`.
 
 Put any users you want the Bot to run commands for inside `users.txt`

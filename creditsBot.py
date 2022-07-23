@@ -16,6 +16,8 @@ with open('token.txt', 'r') as f:
   token = f.read().replace('\n', '')
 with open('users.txt', 'r') as f:
   valid_users = map(int, f.read().splitlines())
+with open('creditedUsers.txt', 'r') as f:
+  credited_users = [int(id) for id in f.read().splitlines()]
 with open('uncreditedUsers.txt', 'r') as f:
   uncredited_users = [int(id) for id in f.read().splitlines()]
 with open('uncreditedRoles.txt', 'r') as f:
@@ -104,7 +106,7 @@ async def run(ctx):
     for member in guild.members:
       # Filter out excluded roles
       memberRoles = list(filter(lambda r: r.name not in uncredited_roles, member.roles))
-      if len(memberRoles) > 0 and member.id not in uncredited_users:
+      if (member.id in credited_users or len(memberRoles) > 0) and member.id not in uncredited_users:
         # If roles remain, must be credited
         profile = None
         profileIndex = None
