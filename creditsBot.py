@@ -6,6 +6,7 @@ from discord.ext import commands
 
 intents = discord.Intents.default()
 intents.members = True
+intents.message_content = True
 bot = commands.Bot(command_prefix='>', intents=intents)
 token = ''
 valid_users = []
@@ -47,6 +48,7 @@ def sort_roles(e):
 
 @bot.command()
 async def run(ctx):
+  print('Running creditsBot')
   if ctx.author.id in valid_users:
     # Setup
     guild = ctx.guild
@@ -73,7 +75,8 @@ async def run(ctx):
             profile.note = rawProfile['note']
           if 'topRole' in rawProfile:
             profile.topRole = rawProfile['topRole']
-          profiles.append(profile)
+          if profile.id not in uncredited_users:
+            profiles.append(profile)
         for rawRole in rawOldCredits['roles']:
           role = Role(rawRole['name'], rawRole['color'], rawRole['noCategory'])
           roles.append(role)
@@ -102,8 +105,8 @@ async def run(ctx):
       print(r.__dict__)
 
     # Find all users
-    await bot.request_offline_members(guild)
-    for member in guild.members:
+    members = await guild.chunk()
+    for member in members:
       # Filter out excluded roles
       memberRoles = list(filter(lambda r: r.name not in uncredited_roles, member.roles))
       if (member.id in credited_users or len(memberRoles) > 0) and member.id not in uncredited_users:
@@ -133,7 +136,7 @@ async def run(ctx):
         if not profile.keepTitle:
           # Update the user's name
           profile.title = member.name
-        asset = member.avatar_url_as(format='png', size=64)
+        asset = member.display_avatar.replace(format='png', size=64)
         profile.icon = 'data:image/png;base64,{}'.format(base64.b64encode(await asset.read()).decode('utf-8'))
         for role in memberRoles[::-1]:
           if role.name not in profile.roles: 
