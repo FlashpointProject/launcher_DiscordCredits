@@ -31,3 +31,11 @@ Start the bot with `python creditsBot.py`
 Run the `>run` command inside any channel the bot has access to and wait for its response.
 
 `credits_new.json` will be present in the same directory. `credits.json` will be used as a base to update from if present.
+
+# Applying CSV Changes
+
+Have a CSV file containing 3 columns - id, title and note saved to `extra.csv`
+
+Make sure you've run once the bot command once to generate `credits_new.json`.
+
+Run `applySheet.py` and see output in `final_credits.json`

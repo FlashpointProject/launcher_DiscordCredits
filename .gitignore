@@ -131,6 +131,9 @@ dmypy.json
 # Working files
 credits.json
 credits_new.json
+final_credits.json
+extra.csv
+uncreditedUsers.txt
 
 # NEVER STORE TOKEN
 token.txt

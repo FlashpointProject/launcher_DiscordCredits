@@ -11,3 +11,12 @@ FPFSS Notification Service
 PF Scrape
 Guardian
 BlueBot
+Flashpoint Mail
+Linux
+Mac (Intel)
+Mac (Apple Silicon)
+Forbidden knowledge
+The Mentioner
+Trial Editor
+CredBot
+IFTTT

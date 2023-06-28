@@ -108,6 +108,7 @@ async def run(ctx):
     members = await guild.chunk()
     for member in members:
       # Filter out excluded roles
+      username = member.global_name if hasattr(member, 'global_name') else member.name
       memberRoles = list(filter(lambda r: r.name not in uncredited_roles, member.roles))
       if (member.id in credited_users or len(memberRoles) > 0) and member.id not in uncredited_users:
         # If roles remain, must be credited
@@ -121,11 +122,11 @@ async def run(ctx):
           pass
         if profileIndex is None:
           try:
-            profileIndex = next(i for i, x in enumerate(profiles) if x.id == 0 and x.title == member.name)
+            profileIndex = next(i for i, x in enumerate(profiles) if x.id == 0 and x.title == username)
           except Exception:
             pass
         if profileIndex is None:
-          profile = Profile(member.name)
+          profile = Profile(username)
           totalNew += 1
           print('New Profile {}'.format(profile.title))
         else:
@@ -135,7 +136,7 @@ async def run(ctx):
         profile.id = member.id
         if not profile.keepTitle:
           # Update the user's name
-          profile.title = member.name
+          profile.title = username
         asset = member.display_avatar.replace(format='png', size=64)
         profile.icon = 'data:image/png;base64,{}'.format(base64.b64encode(await asset.read()).decode('utf-8'))
         for role in memberRoles[::-1]:
