@@ -32,10 +32,17 @@ Run the `>run` command inside any channel the bot has access to and wait for its
 
 `credits_new.json` will be present in the same directory. `credits.json` will be used as a base to update from if present.
 
-# Applying CSV Changes
+# FPL Credits Tools
+Additional tools for working with credits files. For more information, see the "Info" tab of the Flashpoint Credits Google sheet.
 
-Have a CSV file containing 3 columns - id, title and note saved to `extra.csv`
+## csvExport.py
+Export credits to a CSV spreadsheet, including each contributor's Discord ID, username, and description.
+Usage: `python csvExport.py credits.json credits.csv`
 
-Make sure you've run once the bot command once to generate `credits_new.json`.
+## csvImport.py
+Import contributors' descriptions and preferred names from a CSV spreadsheet into an existing credits file.
+Usage: `python csvImport.py credits.json credits.csv`
 
-Run `applySheet.py` and see output in `final_credits.json`
+## createProfile.py
+Manually add a contributor profile to the credits file. Useful for adding contributors who aren't in the Discord server.
+Usage: `python createProfile.py credits.json name role1,role2`
